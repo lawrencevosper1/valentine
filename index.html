@@ -3,27 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Maddy</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>~*~ For Maddy ~*~</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            image-rendering: pixelated;
         }
 
         body {
             min-height: 100vh;
             min-height: 100dvh;
-            background: linear-gradient(135deg, #fff0f3 0%, #ffd6e0 30%, #ffb3c6 60%, #ff8fab 100%);
+            background: #ff69b4;
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0,0,0,0.03) 2px,
+                    rgba(0,0,0,0.03) 4px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0,0,0,0.03) 2px,
+                    rgba(0,0,0,0.03) 4px
+                );
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Press Start 2P', monospace;
             position: relative;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='32'%3E%3Cpolygon points='0,0 0,24 6,19 10,28 14,26 10,17 18,17' fill='%23ff1493' stroke='%23880044' stroke-width='2'/%3E%3C/svg%3E") 0 0, auto;
+        }
+
+        /* Tiled heart background */
+        .bg-tiles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.08;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ctext x='10' y='28' font-size='20'%3E%E2%99%A5%3C/text%3E%3C/svg%3E");
+            background-size: 40px 40px;
+        }
+
+        /* Scrolling marquee-style stars */
+        .star-bar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            height: 28px;
+            background: #cc0044;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            z-index: 5;
+            border-top: 3px solid #ff1493;
+            border-bottom: 3px solid #ff1493;
+            box-shadow: 0 0 8px #ff1493;
+        }
+
+        .star-bar.top { top: 0; }
+        .star-bar.bottom { bottom: 0; display: none; }
+
+        /* MySpace-style music player bar */
+        .music-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 52px;
+            z-index: 50;
+            background: #2a0018;
+            border-top: 3px solid #ff1493;
+            box-shadow: 0 -4px 16px rgba(255,20,147,0.3);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 10px;
+        }
+
+        .mp-btn {
+            width: 32px;
+            height: 32px;
+            background: #ff1493;
+            border: 2px solid #ffdd00;
+            box-shadow: 2px 2px 0 #880044;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='32'%3E%3Cpolygon points='0,0 0,24 6,19 10,28 14,26 10,17 18,17' fill='%23ffdd00' stroke='%23880044' stroke-width='2'/%3E%3C/svg%3E") 0 0, pointer;
+            flex-shrink: 0;
+        }
+
+        .mp-btn:hover {
+            background: #ff69b4;
+        }
+
+        .mp-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #880044;
+        }
+
+        .mp-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .mp-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+            flex-shrink: 0;
+        }
+
+        .mp-now-playing {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 5px;
+            color: #ff9ec4;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .mp-title {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 8px;
+            color: #ffdd00;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mp-progress-wrap {
+            flex: 1;
+            height: 16px;
+            background: #110008;
+            border: 2px inset #666;
+            position: relative;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='32'%3E%3Cpolygon points='0,0 0,24 6,19 10,28 14,26 10,17 18,17' fill='%23ffdd00' stroke='%23880044' stroke-width='2'/%3E%3C/svg%3E") 0 0, pointer;
+            min-width: 60px;
+        }
+
+        .mp-progress-bar {
+            height: 100%;
+            background: linear-gradient(180deg, #ff69b4 0%, #ff1493 50%, #cc0044 100%);
+            width: 0%;
+            transition: width 0.3s linear;
+            position: relative;
+        }
+
+        .mp-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .mp-time {
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            color: #ff9ec4;
+            flex-shrink: 0;
+            min-width: 72px;
+            text-align: right;
+        }
+
+        .mp-vol-wrap {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .mp-vol-icon {
+            font-size: 10px;
+            color: #ff9ec4;
+        }
+
+        .mp-vol {
+            width: 50px;
+            height: 8px;
+            background: #110008;
+            border: 1px inset #666;
+            position: relative;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='32'%3E%3Cpolygon points='0,0 0,24 6,19 10,28 14,26 10,17 18,17' fill='%23ffdd00' stroke='%23880044' stroke-width='2'/%3E%3C/svg%3E") 0 0, pointer;
+        }
+
+        .mp-vol-bar {
+            height: 100%;
+            background: #ff1493;
+            width: 70%;
+        }
+
+        .star-bar-inner {
+            white-space: nowrap;
+            animation: marquee 12s linear infinite;
+            font-size: 10px;
+            color: #ffdd00;
+            letter-spacing: 4px;
+        }
+
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
         }
 
         /* Floating hearts background */
@@ -31,30 +223,26 @@
             position: fixed;
             inset: 0;
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
         }
 
         .floating-heart {
             position: absolute;
-            font-size: 1.4rem;
             opacity: 0;
             animation: floatUp linear infinite;
-            color: #e8657a;
+            color: #ff1493;
+            text-shadow: 1px 1px 0 #cc0044;
         }
 
         @keyframes floatUp {
             0% {
-                transform: translateY(100vh) rotate(0deg) scale(0.5);
+                transform: translateY(100vh) scale(0.5);
                 opacity: 0;
             }
-            10% {
-                opacity: 0.15;
-            }
-            90% {
-                opacity: 0.15;
-            }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
             100% {
-                transform: translateY(-10vh) rotate(360deg) scale(1);
+                transform: translateY(-10vh) scale(1);
                 opacity: 0;
             }
         }
@@ -63,86 +251,140 @@
         .container {
             text-align: center;
             z-index: 10;
-            padding: 2rem;
-            max-width: 600px;
+            max-width: 780px;
+            background: #880044;
+            border: 4px solid #ff1493;
+            box-shadow:
+                0 0 0 2px #cc0044,
+                0 0 0 6px #ff69b4,
+                8px 8px 0 rgba(0,0,0,0.3),
+                0 0 40px rgba(255,20,147,0.3);
+            padding: 3.2rem 2.8rem;
         }
 
         .question {
-            font-family: 'Dancing Script', cursive;
-            font-size: clamp(2.2rem, 6vw, 3.8rem);
-            color: #c2185b;
-            margin-bottom: 3rem;
-            line-height: 1.3;
-            text-shadow: 0 2px 12px rgba(194, 24, 91, 0.15);
-            animation: fadeInDown 1s ease-out;
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            color: #ffdd00;
+            margin-bottom: 2.5rem;
+            line-height: 2;
+            text-shadow:
+                2px 2px 0 #cc0044,
+                -1px -1px 0 #ff69b4;
+            animation: blinkyGlow 1.5s ease-in-out infinite alternate;
         }
 
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes blinkyGlow {
+            from { text-shadow: 2px 2px 0 #cc0044, 0 0 10px #ff69b4; }
+            to { text-shadow: 2px 2px 0 #cc0044, 0 0 30px #ffdd00, 0 0 60px #ff69b4; }
         }
 
         .buttons {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             justify-content: center;
-            align-items: center;
-            animation: fadeIn 1.2s ease-out 0.3s both;
+            align-items: flex-start;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .btn-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-col img {
+            border: 3px solid #ff1493;
+            box-shadow: 3px 3px 0 #2a0018;
+            image-rendering: auto;
+        }
+
+        .btn {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 1.2rem;
+            padding: 1.2rem 2.8rem;
+            border: 3px solid;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='32'%3E%3Cpolygon points='0,0 0,24 6,19 10,28 14,26 10,17 18,17' fill='%23ffdd00' stroke='%23880044' stroke-width='2'/%3E%3C/svg%3E") 0 0, pointer;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            image-rendering: pixelated;
+            transition: none;
+            z-index: 20;
+            min-width: 180px;
         }
 
         .btn-yes {
-            background: linear-gradient(135deg, #e91e63, #c2185b);
-            color: white;
-            border: none;
-            padding: 1rem 3rem;
-            font-size: 1.5rem;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                        box-shadow 0.2s ease;
-            box-shadow: 0 6px 24px rgba(233, 30, 99, 0.35);
-            position: relative;
-            z-index: 20;
+            background: #ff1493;
+            color: #fff;
+            border-color: #ffdd00;
+            box-shadow:
+                4px 4px 0 #880044,
+                0 0 12px rgba(255,20,147,0.5);
         }
 
         .btn-yes:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 32px rgba(233, 30, 99, 0.5);
+            background: #ff69b4;
+            color: #ffdd00;
+            box-shadow:
+                4px 4px 0 #880044,
+                0 0 20px #ff69b4,
+                0 0 40px #ff1493;
         }
 
         .btn-yes:active {
-            transform: scale(1.05);
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 #880044;
         }
 
         .btn-no {
-            background: white;
-            color: #888;
-            border: 2px solid #ddd;
-            padding: 0.8rem 2rem;
-            font-size: 1.1rem;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
+            background: #4a0028;
+            color: #ff9ec4;
+            border-color: #ff69b4;
+            box-shadow: 4px 4px 0 #2a0018;
             position: fixed;
-            transition: none;
-            z-index: 20;
             user-select: none;
             -webkit-user-select: none;
             touch-action: none;
+        }
+
+        .btn-no:hover {
+            background: #660033;
+        }
+
+        /* Visitor counter */
+        .visitor-counter {
+            margin-top: 2.5rem;
+            font-size: 12px;
+            color: #ff9ec4;
+            opacity: 0.8;
+        }
+
+        .counter-box {
+            display: inline-block;
+            background: #000;
+            border: 3px inset #666;
+            padding: 6px 14px;
+            font-family: 'Courier New', monospace;
+            color: #0f0;
+            font-size: 18px;
+            letter-spacing: 4px;
+            margin-top: 6px;
+        }
+
+        /* Under construction */
+        .under-construction {
+            position: fixed;
+            bottom: 34px;
+            right: 10px;
+            font-size: 7px;
+            color: #ffdd00;
+            z-index: 10;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
         }
 
         /* Celebration screen */
@@ -150,56 +392,94 @@
             display: none;
             text-align: center;
             z-index: 10;
-            padding: 2rem;
+            padding: 3rem;
+            background: #880044;
+            border: 4px solid #ff1493;
+            box-shadow:
+                0 0 0 2px #cc0044,
+                0 0 0 6px #ff69b4,
+                8px 8px 0 rgba(0,0,0,0.3),
+                0 0 60px rgba(255,20,147,0.4);
+            max-width: 700px;
         }
 
         .celebration.active {
             display: block;
-            animation: fadeInUp 0.8s ease-out;
+            animation: popIn 0.4s steps(6) forwards;
         }
 
-        @keyframes fadeInUp {
+        @keyframes popIn {
             from {
+                transform: scale(0);
                 opacity: 0;
-                transform: translateY(40px) scale(0.9);
             }
             to {
+                transform: scale(1);
                 opacity: 1;
-                transform: translateY(0) scale(1);
             }
         }
 
         .celebration-heart {
-            font-size: 5rem;
-            animation: pulse 1s ease-in-out infinite;
+            font-size: 4rem;
+            animation: pixelPulse 0.6s steps(3) infinite;
             display: inline-block;
         }
 
-        @keyframes pulse {
+        @keyframes pixelPulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.3); }
         }
 
         .celebration-text {
-            font-family: 'Dancing Script', cursive;
-            font-size: clamp(2.5rem, 7vw, 4.5rem);
-            color: #c2185b;
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(0.9rem, 3vw, 1.4rem);
+            color: #ffdd00;
             margin: 1.5rem 0;
-            line-height: 1.3;
-            text-shadow: 0 2px 16px rgba(194, 24, 91, 0.2);
+            line-height: 2;
+            text-shadow: 2px 2px 0 #cc0044;
         }
 
         .celebration-sub {
-            font-size: 1.3rem;
-            color: #e8657a;
-            font-weight: 600;
-            margin-top: 0.5rem;
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(0.55rem, 1.5vw, 0.7rem);
+            color: #ff9ec4;
+            margin-top: 1rem;
+            line-height: 2;
         }
 
-        /* Confetti / hearts burst */
+
+        .pixel-heart {
+            image-rendering: pixelated;
+            filter: drop-shadow(2px 2px 0 #880044);
+        }
+
+        .secret-link {
+            position: fixed;
+            bottom: 80px;
+            right: 12%;
+            z-index: 10;
+            display: none;
+        }
+
+        .secret-link a {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 9px;
+            color: #ffee44;
+            text-decoration: underline;
+            opacity: 0.6;
+        }
+
+        .secret-link a:hover {
+            opacity: 1;
+        }
+
+        /* Burst hearts */
         .burst-heart {
             position: fixed;
             font-size: 1.8rem;
+            font-family: 'Press Start 2P', monospace;
+            color: #ff1493;
+            text-shadow: 1px 1px 0 #cc0044;
             pointer-events: none;
             z-index: 100;
             animation: burstOut ease-out forwards;
@@ -208,77 +488,152 @@
         @keyframes burstOut {
             0% {
                 opacity: 1;
-                transform: translate(0, 0) scale(0.3) rotate(0deg);
+                transform: translate(0, 0) scale(0.3);
             }
-            70% {
-                opacity: 1;
-            }
+            70% { opacity: 1; }
             100% {
                 opacity: 0;
-                transform: translate(var(--tx), var(--ty)) scale(1) rotate(var(--rot));
+                transform: translate(var(--tx), var(--ty)) scale(1);
             }
         }
 
-        /* Confetti pieces */
+        /* Confetti */
         .confetti {
             position: fixed;
-            width: 10px;
-            height: 10px;
             pointer-events: none;
             z-index: 100;
-            border-radius: 2px;
             animation: confettiFall ease-out forwards;
         }
 
         @keyframes confettiFall {
             0% {
                 opacity: 1;
-                transform: translate(0, 0) rotate(0deg) scale(1);
+                transform: translate(0, 0) scale(1);
             }
             100% {
                 opacity: 0;
-                transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.5);
+                transform: translate(var(--tx), var(--ty)) scale(0.5);
             }
+        }
+
+        /* Sparkle cursor trail */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 999;
+            font-size: 14px;
+            animation: sparkleOut 0.6s steps(4) forwards;
+        }
+
+        @keyframes sparkleOut {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0) translateY(-20px); }
         }
     </style>
 </head>
 <body>
-    <div class="floating-hearts" id="floatingHearts"></div>
+    <div class="bg-tiles"></div>
 
-    <div class="container" id="questionScreen">
-        <h1 class="question">Maddy, will you be my Valentine? 💕</h1>
-        <div class="buttons">
-            <button class="btn-yes" id="yesBtn">Yes!</button>
+    <div class="star-bar top">
+        <div class="star-bar-inner">
+            *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~*
+        </div>
+    </div>
+    <div class="star-bar bottom">
+        <div class="star-bar-inner">
+            *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~* I &lt;3 MADDY *~*
         </div>
     </div>
 
-    <button class="btn-no" id="noBtn">No</button>
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <div class="container" id="questionScreen">
+        <h1 class="question">Maddy, will you be my Valentine?</h1>
+        <div class="buttons">
+            <div class="btn-col">
+                <button class="btn btn-no-inline" id="noBtnInline">No</button>
+                <img src="https://media1.tenor.com/m/YFAjBULYJ0wAAAAC/sad-lonely.gif" alt="sad" width="160" height="133" id="noGif">
+            </div>
+            <div class="btn-col">
+                <button class="btn btn-yes" id="yesBtn">Yes</button>
+                <img src="https://media1.tenor.com/m/QUwTpkDS_gIAAAAC/roasted-shout.gif" alt="hyped" width="160" height="120" id="yesMeme">
+            </div>
+        </div>
+        <div class="visitor-counter">
+            you are visitor #:
+            <br>
+            <span class="counter-box">000001</span>
+        </div>
+    </div>
+
+    <button class="btn btn-no" id="noBtn">No</button>
 
     <div class="celebration" id="celebration">
-        <div class="celebration-heart">💖</div>
-        <div class="celebration-text">Yay! I love you, Maddy!</div>
-        <div class="celebration-sub">Happy Valentine's Day 🥰</div>
+        <div class="celebration-heart"><svg class="pixel-heart" width="64" height="56" viewBox="0 0 16 14"><path d="M1,3 L1,1 L3,1 L3,0 L5,0 L5,1 L7,1 L7,3 L8,3 L8,5 L9,5 L9,3 L11,1 L11,0 L13,0 L13,1 L15,1 L15,3 L15,5 L13,7 L11,9 L9,11 L8,12 L7,11 L5,9 L3,7 L1,5 Z" fill="#ff1493" stroke="#cc0044" stroke-width="0.5"/></svg></div>
+        <div class="celebration-text">Great answer my love!</div>
+        <div class="celebration-sub">Happy Valentine's Day - I can't wait for all that lies ahead in our future. I am certain that we can achieve anything at all we set our hearts and minds on. I love you with everything I've got, Loz</div>
+    </div>
+
+    <div class="secret-link" id="secretLink"><a href="raccoon.html" target="_blank">funny racoon gifs (private)</a></div>
+    <div class="under-construction">// under construction //</div>
+
+    <div class="music-player" id="musicPlayer">
+        <div class="mp-btn" id="mpPlayBtn" title="Play / Pause">
+            <svg id="mpPlayIcon" viewBox="0 0 16 16" fill="#ffdd00"><polygon points="4,2 4,14 14,8"/></svg>
+            <svg id="mpPauseIcon" viewBox="0 0 16 16" fill="#ffdd00" style="display:none"><rect x="3" y="2" width="4" height="12"/><rect x="9" y="2" width="4" height="12"/></svg>
+        </div>
+        <div class="mp-info">
+            <div class="mp-now-playing">now playing</div>
+            <div class="mp-title">Fireflies - Owl City</div>
+        </div>
+        <div class="mp-progress-wrap" id="mpProgressWrap">
+            <div class="mp-progress-bar" id="mpProgressBar"></div>
+        </div>
+        <div class="mp-time" id="mpTime">0:00 / 0:00</div>
+        <div class="mp-vol-wrap">
+            <span class="mp-vol-icon">&#9834;</span>
+            <div class="mp-vol" id="mpVolWrap">
+                <div class="mp-vol-bar" id="mpVolBar"></div>
+            </div>
+        </div>
+        <audio id="mpAudio" src="Fireflies_spotdown.org.mp3" preload="auto" loop></audio>
     </div>
 
     <script>
+        // Sparkle cursor trail
+        document.addEventListener('mousemove', function(e) {
+            if (Math.random() > 0.7) {
+                const s = document.createElement('span');
+                s.className = 'sparkle';
+                s.textContent = ['*', '+', '.', '*'][Math.floor(Math.random() * 4)];
+                s.style.left = e.clientX + 'px';
+                s.style.top = e.clientY + 'px';
+                s.style.color = ['#ffdd00', '#ff69b4', '#ff1493', '#fff'][Math.floor(Math.random() * 4)];
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 600);
+            }
+        });
+
         // Floating background hearts
         (function createFloatingHearts() {
             const container = document.getElementById('floatingHearts');
-            const hearts = ['♥', '♡', '❤', '💕'];
-            for (let i = 0; i < 15; i++) {
+            const hearts = ['<3', '&hearts;', '<3', '<3'];
+            for (let i = 0; i < 12; i++) {
                 const heart = document.createElement('span');
                 heart.className = 'floating-heart';
-                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
                 heart.style.left = Math.random() * 100 + '%';
                 heart.style.animationDuration = (8 + Math.random() * 12) + 's';
                 heart.style.animationDelay = (Math.random() * 10) + 's';
-                heart.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+                heart.style.fontSize = (0.8 + Math.random() * 1) + 'rem';
+                heart.style.fontFamily = "'Press Start 2P', monospace";
                 container.appendChild(heart);
             }
         })();
 
         // No button - runaway behavior
         const noBtn = document.getElementById('noBtn');
+        const noBtnInline = document.getElementById('noBtnInline');
         const yesBtn = document.getElementById('yesBtn');
         const questionScreen = document.getElementById('questionScreen');
         const celebration = document.getElementById('celebration');
@@ -286,12 +641,17 @@
         let dodgeCount = 0;
         let noBtnActive = true;
 
-        // Position the No button initially near the Yes button
+        // Position the No button initially overlaying the inline button
         function initNoBtn() {
-            const yesRect = yesBtn.getBoundingClientRect();
-            noBtn.style.left = (yesRect.right + 30) + 'px';
-            noBtn.style.top = (yesRect.top + (yesRect.height / 2) - (noBtn.offsetHeight / 2)) + 'px';
+            const inlineRect = noBtnInline.getBoundingClientRect();
+            noBtn.style.left = inlineRect.left + 'px';
+            noBtn.style.top = inlineRect.top + 'px';
+            noBtn.style.width = inlineRect.width + 'px';
+            noBtn.style.height = inlineRect.height + 'px';
         }
+
+        // Also make the inline No button invisible (it's just a placeholder for layout)
+        noBtnInline.style.visibility = 'hidden';
 
         window.addEventListener('load', initNoBtn);
         window.addEventListener('resize', () => {
@@ -304,7 +664,7 @@
 
             const btnWidth = noBtn.offsetWidth;
             const btnHeight = noBtn.offsetHeight;
-            const padding = 20;
+            const padding = 40;
 
             const maxX = window.innerWidth - btnWidth - padding;
             const maxY = window.innerHeight - btnHeight - padding;
@@ -312,13 +672,11 @@
             let newX, newY;
             const currentRect = noBtn.getBoundingClientRect();
 
-            // Make sure it moves a meaningful distance
             const minDist = 100 + (dodgeCount * 15);
             let attempts = 0;
             do {
                 newX = padding + Math.random() * (maxX - padding);
                 newY = padding + Math.random() * (maxY - padding);
-                const dist = Math.hypot(newX - currentRect.left, newY - currentRect.top);
                 attempts++;
                 if (attempts > 50) break;
             } while (Math.hypot(newX - currentRect.left, newY - currentRect.top) < minDist);
@@ -326,21 +684,17 @@
             noBtn.style.left = newX + 'px';
             noBtn.style.top = newY + 'px';
 
-            // Shrink slightly each dodge to make it feel more elusive
             const scale = Math.max(0.6, 1 - dodgeCount * 0.03);
             noBtn.style.transform = `scale(${scale})`;
 
-            // After many dodges, change text
-            if (dodgeCount === 3) noBtn.textContent = "Nope!";
-            if (dodgeCount === 6) noBtn.textContent = "Can't catch me!";
-            if (dodgeCount === 10) noBtn.textContent = "Give up 😜";
-            if (dodgeCount === 15) noBtn.textContent = "Just say Yes!";
+            if (dodgeCount === 3) noBtn.textContent = "Nope";
+            if (dodgeCount === 6) noBtn.textContent = "lol no";
+            if (dodgeCount === 10) noBtn.textContent = "give up";
+            if (dodgeCount === 15) noBtn.textContent = "just say yes";
         }
 
-        // Desktop: dodge on hover
         noBtn.addEventListener('mouseenter', dodgeNoBtn);
 
-        // Mobile: dodge on touch
         noBtn.addEventListener('touchstart', function(e) {
             e.preventDefault();
             dodgeNoBtn();
@@ -353,39 +707,39 @@
             noBtn.style.display = 'none';
             celebration.classList.add('active');
 
-            // Change background to celebratory
-            document.body.style.background = 'linear-gradient(135deg, #ffe0e6 0%, #ffb3c6 30%, #ff8fab 60%, #ff6b8a 100%)';
+            document.body.style.background = '#aa0055';
+            document.body.style.backgroundImage = `
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px)
+            `;
 
-            // Burst hearts from center
+            document.getElementById('secretLink').style.display = 'block';
+
             burstHearts();
-            // Confetti
             burstConfetti();
-
-            // Another burst after a short delay
             setTimeout(burstHearts, 600);
             setTimeout(burstConfetti, 400);
         });
 
         function burstHearts() {
-            const hearts = ['💖', '💕', '❤️', '💗', '💓', '💘', '💝', '✨'];
+            const hearts = ['\u2665', '<3', '\u2665', '<3'];
             const cx = window.innerWidth / 2;
             const cy = window.innerHeight / 2;
 
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 16; i++) {
                 const el = document.createElement('span');
                 el.className = 'burst-heart';
                 el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
 
-                const angle = (Math.PI * 2 * i) / 20 + (Math.random() - 0.5) * 0.5;
-                const dist = 150 + Math.random() * 250;
+                const angle = (Math.PI * 2 * i) / 16 + (Math.random() - 0.5) * 0.5;
+                const dist = 120 + Math.random() * 200;
                 const tx = Math.cos(angle) * dist;
-                const ty = Math.sin(angle) * dist - 100;
+                const ty = Math.sin(angle) * dist - 80;
 
                 el.style.left = cx + 'px';
                 el.style.top = cy + 'px';
                 el.style.setProperty('--tx', tx + 'px');
                 el.style.setProperty('--ty', ty + 'px');
-                el.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
                 el.style.animationDuration = (1 + Math.random() * 0.8) + 's';
                 el.style.animationDelay = (Math.random() * 0.3) + 's';
                 el.style.fontSize = (1.2 + Math.random() * 1.5) + 'rem';
@@ -396,28 +750,27 @@
         }
 
         function burstConfetti() {
-            const colors = ['#e91e63', '#ff5722', '#ff9800', '#ffeb3b', '#9c27b0', '#f44336', '#ff4081', '#e040fb'];
+            const colors = ['#ff1493', '#ff69b4', '#ffdd00', '#ff0066', '#ff4081', '#cc0044', '#fff'];
             const cx = window.innerWidth / 2;
             const cy = window.innerHeight / 2;
 
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 40; i++) {
                 const el = document.createElement('div');
                 el.className = 'confetti';
 
                 const angle = Math.random() * Math.PI * 2;
-                const dist = 100 + Math.random() * 350;
+                const dist = 80 + Math.random() * 300;
                 const tx = Math.cos(angle) * dist;
                 const ty = Math.sin(angle) * dist - 50 + Math.random() * 200;
 
+                const size = 4 + Math.floor(Math.random() * 6);
                 el.style.left = cx + 'px';
                 el.style.top = cy + 'px';
                 el.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                el.style.width = (6 + Math.random() * 8) + 'px';
-                el.style.height = (6 + Math.random() * 8) + 'px';
-                el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                el.style.width = size + 'px';
+                el.style.height = size + 'px';
                 el.style.setProperty('--tx', tx + 'px');
                 el.style.setProperty('--ty', ty + 'px');
-                el.style.setProperty('--rot', (Math.random() * 1080 - 540) + 'deg');
                 el.style.animationDuration = (0.8 + Math.random() * 1.2) + 's';
                 el.style.animationDelay = (Math.random() * 0.4) + 's';
 
@@ -425,6 +778,67 @@
                 setTimeout(() => el.remove(), 3000);
             }
         }
+        // Music player
+        (function() {
+            const audio = document.getElementById('mpAudio');
+            const playBtn = document.getElementById('mpPlayBtn');
+            const playIcon = document.getElementById('mpPlayIcon');
+            const pauseIcon = document.getElementById('mpPauseIcon');
+            const progressWrap = document.getElementById('mpProgressWrap');
+            const progressBar = document.getElementById('mpProgressBar');
+            const timeDisplay = document.getElementById('mpTime');
+            const volWrap = document.getElementById('mpVolWrap');
+            const volBar = document.getElementById('mpVolBar');
+
+            audio.volume = 0.7;
+
+            function fmt(s) {
+                const m = Math.floor(s / 60);
+                const sec = Math.floor(s % 60);
+                return m + ':' + (sec < 10 ? '0' : '') + sec;
+            }
+
+            playBtn.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                } else {
+                    audio.pause();
+                }
+            });
+
+            audio.addEventListener('play', function() {
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+            });
+
+            audio.addEventListener('pause', function() {
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+            });
+
+            audio.addEventListener('timeupdate', function() {
+                if (audio.duration) {
+                    progressBar.style.width = (audio.currentTime / audio.duration * 100) + '%';
+                    timeDisplay.textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
+                }
+            });
+
+            progressWrap.addEventListener('click', function(e) {
+                const rect = progressWrap.getBoundingClientRect();
+                const pct = (e.clientX - rect.left) / rect.width;
+                audio.currentTime = pct * audio.duration;
+            });
+
+            volWrap.addEventListener('click', function(e) {
+                const rect = volWrap.getBoundingClientRect();
+                const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                audio.volume = pct;
+                volBar.style.width = (pct * 100) + '%';
+            });
+
+            // Autoplay attempt
+            audio.play().catch(function() {});
+        })();
     </script>
 </body>
 </html>
