@@ -529,9 +529,118 @@
             0% { opacity: 1; transform: scale(1); }
             100% { opacity: 0; transform: scale(0) translateY(-20px); }
         }
+
+        /* Loading screen */
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: #2a0018;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            gap: 1.5rem;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-heart {
+            animation: loadPulse 0.8s steps(3) infinite;
+        }
+
+        @keyframes loadPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .loading-text {
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(0.7rem, 2.5vw, 1rem);
+            color: #ffdd00;
+            text-shadow: 2px 2px 0 #cc0044;
+        }
+
+        .loading-bar-wrap {
+            width: 280px;
+            max-width: 80vw;
+            height: 20px;
+            background: #110008;
+            border: 3px inset #666;
+        }
+
+        .loading-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(180deg, #ff69b4 0%, #ff1493 50%, #cc0044 100%);
+            position: relative;
+        }
+
+        .loading-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .loading-sub {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 7px;
+            color: #ff9ec4;
+            animation: blink 1s step-end infinite;
+        }
+
+        /* Heart rain on celebration */
+        .heart-rain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+            display: none;
+        }
+
+        .heart-rain.active {
+            display: block;
+        }
+
+        .rain-heart {
+            position: absolute;
+            top: -30px;
+            font-family: 'Press Start 2P', monospace;
+            color: #ff1493;
+            text-shadow: 1px 1px 0 #cc0044;
+            opacity: 0.5;
+            animation: heartFall linear infinite;
+        }
+
+        @keyframes heartFall {
+            0% {
+                transform: translateY(-30px) rotate(0deg);
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="loading-screen" id="loadingScreen">
+        <svg class="loading-heart" width="80" height="70" viewBox="0 0 16 14"><path d="M1,3 L1,1 L3,1 L3,0 L5,0 L5,1 L7,1 L7,3 L8,3 L8,5 L9,5 L9,3 L11,1 L11,0 L13,0 L13,1 L15,1 L15,3 L15,5 L13,7 L11,9 L9,11 L8,12 L7,11 L5,9 L3,7 L1,5 Z" fill="#ff1493" stroke="#cc0044" stroke-width="0.5"/></svg>
+        <div class="loading-text">loading_love.exe</div>
+        <div class="loading-bar-wrap">
+            <div class="loading-bar-fill" id="loadingBarFill"></div>
+        </div>
+        <div class="loading-sub">please wait...</div>
+    </div>
+
+    <div class="heart-rain" id="heartRain"></div>
     <div class="bg-tiles"></div>
 
     <div class="star-bar top">
@@ -570,11 +679,11 @@
 
     <div class="celebration" id="celebration">
         <div class="celebration-heart"><svg class="pixel-heart" width="64" height="56" viewBox="0 0 16 14"><path d="M1,3 L1,1 L3,1 L3,0 L5,0 L5,1 L7,1 L7,3 L8,3 L8,5 L9,5 L9,3 L11,1 L11,0 L13,0 L13,1 L15,1 L15,3 L15,5 L13,7 L11,9 L9,11 L8,12 L7,11 L5,9 L3,7 L1,5 Z" fill="#ff1493" stroke="#cc0044" stroke-width="0.5"/></svg></div>
-        <div class="celebration-text">Great answer my love!</div>
-        <div class="celebration-sub">Happy Valentine's Day - I can't wait for all that lies ahead in our future. I am certain that we can achieve anything at all we set our hearts and minds on. I love you with everything I've got, Loz</div>
+        <div class="celebration-text">Great Answer!</div>
+        <div class="celebration-sub">Happy Valentine's Day my love - I can't wait for all that lies ahead in our future. I am certain that we can achieve anything at all we set our hearts and minds to. I love you with everything I've got, Loz</div>
     </div>
 
-    <div class="secret-link" id="secretLink"><a href="raccoon.html" target="_blank">funny racoon gifs (private)</a></div>
+    <div class="secret-link" id="secretLink"><a href="raccoon.html" target="_blank">secret files - do not open</a></div>
     <div class="under-construction">// under construction //</div>
 
     <div class="music-player" id="musicPlayer">
@@ -600,6 +709,27 @@
     </div>
 
     <script>
+        // Loading screen
+        (function() {
+            const fill = document.getElementById('loadingBarFill');
+            const screen = document.getElementById('loadingScreen');
+            let progress = 0;
+            const interval = setInterval(function() {
+                progress += Math.random() * 15 + 3;
+                if (progress >= 100) {
+                    progress = 100;
+                    fill.style.width = '100%';
+                    clearInterval(interval);
+                    setTimeout(function() {
+                        screen.classList.add('fade-out');
+                        setTimeout(function() { screen.remove(); }, 500);
+                    }, 400);
+                } else {
+                    fill.style.width = progress + '%';
+                }
+            }, 200);
+        })();
+
         // Sparkle cursor trail
         document.addEventListener('mousemove', function(e) {
             if (Math.random() > 0.7) {
@@ -687,10 +817,15 @@
             const scale = Math.max(0.6, 1 - dodgeCount * 0.03);
             noBtn.style.transform = `scale(${scale})`;
 
-            if (dodgeCount === 3) noBtn.textContent = "Nope";
-            if (dodgeCount === 6) noBtn.textContent = "lol no";
-            if (dodgeCount === 10) noBtn.textContent = "give up";
-            if (dodgeCount === 15) noBtn.textContent = "just say yes";
+            var noMsgs = ["No", "Nope", "nah", "no way", "not happening", "lol no", "nice try", "nuh uh", "as if", "stop it", "give up", "seriously?", "come on", "ok fine... no", "just say yes"];
+            if (dodgeCount <= noMsgs.length) {
+                noBtn.textContent = noMsgs[dodgeCount - 1];
+            }
+
+            // Yes button grows with each dodge
+            var yesScale = 1 + dodgeCount * 0.05;
+            yesBtn.style.transform = 'scale(' + Math.min(yesScale, 2) + ')';
+            yesBtn.style.zIndex = '20';
         }
 
         noBtn.addEventListener('mouseenter', dodgeNoBtn);
@@ -714,6 +849,22 @@
             `;
 
             document.getElementById('secretLink').style.display = 'block';
+
+            // Start heart rain
+            var rain = document.getElementById('heartRain');
+            rain.classList.add('active');
+            var rainHearts = ['\u2665', '<3', '\u2665', '<3'];
+            for (var i = 0; i < 30; i++) {
+                var h = document.createElement('span');
+                h.className = 'rain-heart';
+                h.textContent = rainHearts[Math.floor(Math.random() * rainHearts.length)];
+                h.style.left = Math.random() * 100 + '%';
+                h.style.fontSize = (0.6 + Math.random() * 1.2) + 'rem';
+                h.style.animationDuration = (3 + Math.random() * 5) + 's';
+                h.style.animationDelay = (Math.random() * 4) + 's';
+                h.style.opacity = (0.2 + Math.random() * 0.4);
+                rain.appendChild(h);
+            }
 
             burstHearts();
             burstConfetti();
